@@ -368,7 +368,7 @@ convertIntoInt.Cast<int>().Dump("Convert from Object to Int");
 
 // Extention 12: Chunk
 IEnumerable<int> splitThisListIntoChunks = [1, 2, 3, 4, 5, 6];
-splitThisListIntoChunks.Chunk(3).Dump("Split the entire list into multiple arrays: list.Length/3 size arrays.");
+splitThisListIntoChunks.Chunk(3).Dump("Split the entire list into multiple arrays: list.Length/3(chunk value) size arrays.");
 // Output:
 /*
 ┌───────────────────────────┐
@@ -413,6 +413,7 @@ splitThisListIntoChunks.Chunk(3).SelectMany(x => x).Dump("Revert back to single 
 
 IEnumerable<int> unevenOrder = [1, 2, 3, 4, 5];
 unevenOrder.Chunk(3).Dump("UnevenOrder - Split the entire list into multiple arrays: list.Length/3 size arrays.");
+unevenOrder.Chunk(1).Dump("UnevenOrder - Split the entire list into multiple arrays: list.Length/4 size arrays.");
 // Output:
 /*
 ┌───────────────────────────┐
@@ -436,5 +437,64 @@ unevenOrder.Chunk(3).Dump("UnevenOrder - Split the entire list into multiple arr
  entire list into multiple
  arrays: list.Length/3 size
 
+ */
+#endregion
+
+#region Extensions_Existence_Or_QuantityChecks_13_to_15
+IEnumerable<int> immediationExcetionElements = [1, 2, 3, 4, 5, 6];
+
+// Extension 13: Any => If condition matches with in collection then it gives true.
+// Ex: x>2 then 3>2 => matches then it won't check 4,5,6
+immediationExcetionElements.Any(x => x > 2).Dump("Any extension method");
+// Output:
+/*
+┌───────┐
+│ True  │
+└───────┘
+  Any
+extension
+ method
+ */
+
+// Extension 14: All => Condition matches with all values in the collection if any one is fail then it gives false
+// Ex: x>2 then 1>2 => first itself failed so it won't tranverse
+// Ex: x>0 then 1,2,3,4,5,6 => all values >0 so it gives true.
+immediationExcetionElements.All(x => x > 2).Dump("All extension method");
+// Output:
+/*
+┌───────┐
+│ False │
+└───────┘
+  All
+extension
+ method
+ */
+
+// Extension 15: Contains => If specified element is matched in collection then it gives true
+// Ex: 3 then [1,2,3] => 3 is available then true
+// Ex: 10 then [1,2,3,4,5,6] => then it gives false
+immediationExcetionElements.Contains(3).Dump("Contains extension method - Returns true");
+//Output:
+/*
+┌───────┐
+│ True  │
+└───────┘
+Contains
+extension
+method -
+Returns
+  true
+ */
+immediationExcetionElements.Contains(31).Dump("Contains extension method - Returns false");
+// Output:
+/*
+┌───────┐
+│ False │
+└───────┘
+Contains
+extension
+method -
+Returns
+  false
  */
 #endregion
