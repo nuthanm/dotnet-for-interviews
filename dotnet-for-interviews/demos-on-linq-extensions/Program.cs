@@ -498,3 +498,45 @@ Returns
   false
  */
 #endregion
+
+#region Extensions_SequenceManipulation_16_to_17
+// Extension  16: Append() => Adds one value at end of the list
+IEnumerable<int> sequenceCollections = [1, 2, 3, 4, 5];
+sequenceCollections.Append(6).Dump("Append Extension - 6");
+// Output:
+/*
+┌─────────────────────────────┐
+│ AppendPrepend1Iterator<int> │
+├─────────────────────────────┤
+│ 1                           │
+│ 2                           │
+│ 3                           │
+│ 4                           │
+│ 5                           │
+│ 6                           │
+└─────────────────────────────┘
+       Append Extension - 6
+ */
+// Extension 17: Prepend() => Adds one value at begining of the list
+sequenceCollections.Prepend(0).Dump("Prepend Extension - 0");
+// Output:
+/*
+ ┌─────────────────────────────┐
+│ AppendPrepend1Iterator<int> │
+├─────────────────────────────┤
+│ 0                           │
+│ 1                           │
+│ 2                           │
+│ 3                           │
+│ 4                           │
+│ 5                           │
+└─────────────────────────────┘
+       Prepend Extension - 0
+ */
+
+
+#endregion
+
+#region Extensions_Aggregation_Methods_18_to_
+
+#endregion
