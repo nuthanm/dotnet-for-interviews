@@ -341,6 +341,100 @@ selectManyCollection.SelectMany(x => x.Select(x => x.ToString())).Dump("SelectMa
     SelectMany to Select - Print values in strings
  */
 // Extention 11: Cast
+IEnumerable<object> convertIntoInt = [1, 2, 3, 4, 5];
+// Using Cast it converts the entire list from object to int
+//Note: we cannot use this Cast on multi type object values.
+
+convertIntoInt.Cast<int>().Dump("Convert from Object to Int");
+// Output:
+/*
+┌──────────────────────────┐
+│ <CastIterator>d__68<int> │
+├──────────────────────────┤
+│ 1                        │
+│ 2                        │
+│ 3                        │
+│ 4                        │
+│ 5                        │
+└──────────────────────────┘
+ Convert from Object to Int
+*/
+
+// convertIntoInt.Cast<string>().Dump("Convert from Object to String");
+// Output:
+
+// [Failed to Render System.Collections.Generic.IEnumerable`1[System.String] - System.Linq.Enumerable +< CastIterator > 
+// d__68`1[System.String]].Unable to cast object of type 'System.Int32' to type 'System.String'.
 
 // Extention 12: Chunk
+IEnumerable<int> splitThisListIntoChunks = [1, 2, 3, 4, 5, 6];
+splitThisListIntoChunks.Chunk(3).Dump("Split the entire list into multiple arrays: list.Length/3 size arrays.");
+// Output:
+/*
+┌───────────────────────────┐
+│ <ChunkIterator>d__70<int> │
+├───────────────────────────┤
+│ ┌───┬────────┐            │
+│ │ # │ int[3] │            │
+│ ├───┼────────┤            │
+│ │ 0 │ 1      │            │
+│ │ 1 │ 2      │            │
+│ │ 2 │ 3      │            │
+│ └───┴────────┘            │
+│ ┌───┬────────┐            │
+│ │ # │ int[3] │            │
+│ ├───┼────────┤            │
+│ │ 0 │ 4      │            │
+│ │ 1 │ 5      │            │
+│ │ 2 │ 6      │            │
+│ └───┴────────┘            │
+└───────────────────────────┘
+ Split the entire list into
+      multiple arrays:
+ list.Length/3 size arrays.
+
+ */
+
+splitThisListIntoChunks.Chunk(3).SelectMany(x => x).Dump("Revert back to single array");
+// Output:
+/*
+┌────────────────────────────────────────────────┐
+│ SelectManySingleSelectorIterator<Int32[], int> │
+├────────────────────────────────────────────────┤
+│ 1                                              │
+│ 2                                              │
+│ 3                                              │
+│ 4                                              │
+│ 5                                              │
+│ 6                                              │
+└────────────────────────────────────────────────┘
+           Revert back to single array
+ */
+
+IEnumerable<int> unevenOrder = [1, 2, 3, 4, 5];
+unevenOrder.Chunk(3).Dump("UnevenOrder - Split the entire list into multiple arrays: list.Length/3 size arrays.");
+// Output:
+/*
+┌───────────────────────────┐
+│ <ChunkIterator>d__70<int> │
+├───────────────────────────┤
+│ ┌───┬────────┐            │
+│ │ # │ int[3] │            │
+│ ├───┼────────┤            │
+│ │ 0 │ 1      │            │
+│ │ 1 │ 2      │            │
+│ │ 2 │ 3      │            │
+│ └───┴────────┘            │
+│ ┌───┬────────┐            │
+│ │ # │ int[2] │            │
+│ ├───┼────────┤            │
+│ │ 0 │ 4      │            │
+│ │ 1 │ 5      │            │
+│ └───┴────────┘            │
+└───────────────────────────┘
+  UnevenOrder - Split the
+ entire list into multiple
+ arrays: list.Length/3 size
+
+ */
 #endregion
