@@ -540,3 +540,133 @@ sequenceCollections.Prepend(0).Dump("Prepend Extension - 0");
 #region Extensions_Aggregation_Methods_18_to_
 
 #endregion
+
+#region Differneces_Btw_IEnumerable_Vs_ICollection_Vs_IList
+// Order for upgrade => IEnumerable => ICollection => IList => IQueryable
+
+// Option 1: IEnumerable
+
+
+IEnumerable<int> inMemoryNumbers = [1, 2, 3, 4];
+
+// Problems:
+/*
+ * 1. They cannot add any new element inside collection.
+ * 2. To access element there is no option to use index like numbers[0].
+ */
+foreach (var number in inMemoryNumbers)
+{
+    Console.WriteLine(number);
+}
+
+numbers.Dump("Using IEnumerable");
+
+// Output:
+/*
+┌─────────────────────────┐
+│ <> z__ReadOnlyArray<int> │
+├─────────────────────────┤
+│ 1                       │
+│ 2                       │
+│ 3                       │
+│ 4                       │
+└─────────────────────────┘
+     Using IEnumerable
+*/
+
+// Option 2: ICollection
+ICollection<int> collectionNumbers = [1, 2, 3, 4];
+
+// Pros over IEnumerable
+// Elements can add using 
+collectionNumbers.Add(1);
+collectionNumbers.Dump("Using ICollection - Added 1");
+
+// Output: Added new element in last
+/*
+┌───────────┐
+│ List<int> │
+├───────────┤
+│ 1         │
+│ 2         │
+│ 3         │
+│ 4         │
+│ 1         │
+└───────────┘
+   Using
+ICollection -
+   Added 1
+ */
+collectionNumbers.Remove(2);
+collectionNumbers.Dump("Using ICollection - Removed 1");
+
+// Output: Remove the first occurance in collection
+/*
+┌───────────┐
+│ List<int> │
+├───────────┤
+│ 1         │
+│ 3         │
+│ 4         │
+│ 1         │
+└───────────┘
+   Using
+ICollection -
+  Removed 1
+ */
+
+// Problems:
+/*
+ * 1. We can add elements in the collection
+ * 2. To access element there is no option to use index => Error: collectionNumbers[2] this gives: Error CS0021	Cannot apply indexing with [] to an expression of type 'ICollection<int>'
+ */
+
+// Option 3: IList
+IList<int> listNumbers = [1, 2, 3, 4];
+listNumbers.Add(1);
+listNumbers.Dump("Using IList - Added 1");
+// Output: Added at last
+/*
+┌───────────┐
+│ List<int> │
+├───────────┤
+│ 1         │
+│ 2         │
+│ 3         │
+│ 4         │
+│ 1         │
+└───────────┘
+Using IList -
+   Added 1
+ */
+listNumbers.Remove(2);
+listNumbers.Dump("Using IList - Remove 2");
+// Output: Remove the first occurance item in the List 
+/*
+┌───────────┐
+│ List<int> │
+├───────────┤
+│ 1         │
+│ 3         │
+│ 4         │
+│ 1         │
+└───────────┘
+Using IList -
+  Remove 2
+ */
+
+listNumbers[1].Dump("Accessing 1st position value");
+// Output:
+/*
+┌───────┐
+│ 3     │
+└───────┘
+Accessing
+  1st
+position
+  value
+ */
+
+// On overall - If you want to perform accessing elements or adding a new or removing an existing element then use IList.
+// If you want to read only then go with IEnumerble.
+#endregion

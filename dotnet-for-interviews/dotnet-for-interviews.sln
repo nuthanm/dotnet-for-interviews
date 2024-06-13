@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-api-knowledge-check", "dotnet-api-knowledge-check\dotnet-api-knowledge-check.csproj", "{437F4691-8CA3-4EBD-A4EA-A3C7CDC3EC20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demos-on-linq-extensions", "demos-on-linq-extensions\demos-on-linq-extensions.csproj", "{0F91D353-3632-49F2-A629-2BF1ABE73B82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "demos-on-linq-extensions", "demos-on-linq-extensions\demos-on-linq-extensions.csproj", "{0F91D353-3632-49F2-A629-2BF1ABE73B82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
