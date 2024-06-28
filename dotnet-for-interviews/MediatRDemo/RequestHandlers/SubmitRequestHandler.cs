@@ -14,17 +14,20 @@ namespace MediatRDemo.RequestHandlers
         }
         public Task Handle(SubmitRequest request, CancellationToken cancellationToken)
         {
-            var submitRequest = JsonSerializer.Deserialize<Submit>(request.submitRequest);
+            var submitRequest = JsonSerializer.Deserialize<Request<SubmitPayLoad>>(request.submitRequest);
             if (submitRequest != null)
             {
-                Console.WriteLine($"Request Id:{submitRequest.RequestId} and is it requestProcess: {submitRequest.IsRequestProcess} and is it new/reiniate:{submitRequest.IsReinitate}");
-
-                if (submitRequest.IsRequestProcess)
+                foreach (var item in submitRequest.Payloads)
                 {
-                    // Process new request or else do other implementation.
-                }
+                    Console.WriteLine($"Request Id:{item.RequestId} and is it requestProcess: {item.IsRequestProcess} and is it new/reiniate:{item.IsReinitate}");
 
-                // Write your own db logic example to update your delete entries
+                    if (item.IsRequestProcess)
+                    {
+                        // Process new request or else do other implementation.
+                    }
+
+                    // Write your own db logic example to update your delete entries
+                }
             }
             return Task.CompletedTask;
         }

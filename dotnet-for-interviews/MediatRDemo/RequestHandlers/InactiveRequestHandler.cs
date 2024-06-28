@@ -14,7 +14,7 @@ namespace MediatRDemo.RequestHandlers
         }
         public Task Handle(InactiveRequest request, CancellationToken cancellationToken)
         {
-            var inactiveRequest = JsonSerializer.Deserialize<InActive>(request.inactiveRequest);
+            var inactiveRequest = JsonSerializer.Deserialize<Request<InActivePayLoad>>(request.inactiveRequest);
 
             if (inactiveRequest != null)
             {

@@ -1,6 +1,6 @@
 ﻿namespace MediatRDemo.Models
 {
-    public class Submit
+    public class SubmitPayLoad
     {
         public int RequestId { get; set; }
 

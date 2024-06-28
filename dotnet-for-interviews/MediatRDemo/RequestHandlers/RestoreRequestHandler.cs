@@ -15,7 +15,7 @@ namespace MediatRDemo.RequestHandlers
         public Task Handle(RestoreRequest request, CancellationToken cancellationToken)
         {
 
-            var restoreRequest = JsonSerializer.Deserialize<Restore>(request.restoreRequest);
+            var restoreRequest = JsonSerializer.Deserialize<Request<RestorePayLoad>>(request.restoreRequest);
             if (restoreRequest != null)
             {
                 foreach (var item in restoreRequest.Payloads)

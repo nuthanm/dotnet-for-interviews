@@ -14,7 +14,7 @@ namespace MediatRDemo.RequestHandlers
         }
         public Task Handle(WrapupRequest request, CancellationToken cancellationToken)
         {
-            var wrapUpRequest = JsonSerializer.Deserialize<Wrapup>(request.wrapUpRequest);
+            var wrapUpRequest = JsonSerializer.Deserialize<Request<WrapupPayLoad>>(request.wrapUpRequest);
             if (wrapUpRequest != null)
             {
                 foreach (var item in wrapUpRequest.Payloads)

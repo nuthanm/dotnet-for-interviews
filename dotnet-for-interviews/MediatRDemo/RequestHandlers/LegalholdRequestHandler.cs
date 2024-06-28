@@ -14,7 +14,7 @@ namespace MediatRDemo.RequestHandlers
         }
         public Task Handle(LegalholdRequest request, CancellationToken cancellationToken)
         {
-            var legalHoldRequest = JsonSerializer.Deserialize<LegalHold>(request.legalHoldRequest);
+            var legalHoldRequest = JsonSerializer.Deserialize<Request<LegalHoldPayLoad>>(request.legalHoldRequest);
             if (legalHoldRequest != null)
             {
                 foreach (var item in legalHoldRequest.Payloads)

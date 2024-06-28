@@ -14,7 +14,7 @@ namespace MediatRDemo.RequestHandlers
         }
         public Task Handle(DeleteRequest request, CancellationToken cancellationToken)
         {
-            var deleteRequest = JsonSerializer.Deserialize<Delete>(request.deleteRequest);
+            var deleteRequest = JsonSerializer.Deserialize<Request<DeletePayLoad>>(request.deleteRequest);
             if (deleteRequest != null)
             {
                 foreach (var item in deleteRequest.Payloads)

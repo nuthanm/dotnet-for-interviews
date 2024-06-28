@@ -29,23 +29,27 @@ Console.WriteLine("Hello, World!");
 // For Submitted
 var submitted = @"{
   ""EventType"":""Submitted"",
-  ""Payload"": {
-    ""RequestId"": 1024,
-    ""IsReinitiate"": false,
-    ""IsRequestProcess"": true,
-    ""BlobUrl"":""https://url.for.extract.com""
-  }
+  ""Payloads"": [
+        {
+            ""RequestId"": 1024,
+            ""IsReinitiate"": false,
+            ""IsRequestProcess"": true,
+            ""BlobUrl"":""https://url.for.extract.com""
+        }
+    ]
 }";
 
 // For Re-Initiate
 var reInitiate = @"{
   ""EventType"":""Submitted"",
-  ""Payload"": {
-    ""RequestId"": 1024,
-    ""IsReinitiate"": true,
-    ""IsRequestProcess"": true,
-    ""BlobUrl"":""https://url.for.extract.com""
-  }
+  ""Payloads"": [
+        {
+            ""RequestId"": 1024,
+            ""IsReinitiate"": true,
+            ""IsRequestProcess"": true,
+            ""BlobUrl"":""https://url.for.extract.com""
+        }
+    ]
 }";
 
 // For Delete
@@ -149,13 +153,13 @@ var restore = @"{
 //string eventType = (string)jObject["EventType"];
 //Console.WriteLine($"Event Type: {eventType}");
 
-using (var doc = JsonDocument.Parse(legalLifted))
+using (var doc = JsonDocument.Parse(wrapup))
 {
     var root = doc.RootElement;
     Console.WriteLine($"Event Type: {root.GetProperty("EventType").GetString()}");
     switch (root.GetProperty("EventType").GetString())
     {
-        case "Submitted":
+        case "Submitted": // Todo: For Re-Initiate we need to handle and pass Re-Initiate object
             await mediator.Send(new SubmitRequest(submitted));
             break;
 
