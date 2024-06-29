@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Azure.Messaging.ServiceBus;
+using System.Text.Json;
 
 
 // Create a ServiceBusClient
@@ -36,3 +37,33 @@ Console.WriteLine($"Message what we received: {sbReceivedMessage.Body}");
 Console.WriteLine("Demos on Azure Servicebus - End");
 
 #endregion
+
+#region ServiceBus_SendObjectMessage
+
+// Step 1: Prepare an object
+var emp = new Employee()
+{
+    Id = 1,
+    Name = "Nani"
+};
+
+// Step 2: Serialize Object => It means convert into Json string
+var empInJson = JsonSerializer.Serialize(emp);
+
+// Step 3: Add that json directly to servicebusMessage if not Encoding.utf8.Byte method
+ServiceBusMessage sbMessageObjectData = new ServiceBusMessage(empInJson);
+
+// Step 4: Add this message to Sender method.
+ServiceBusSender sbSenderObject = sb.CreateSender("<Queue_Name");
+
+// Step 5: Your message is in json format.
+await sbSenderObject.SendMessageAsync(sbMessageObjectData);
+
+#endregion
+
+public class Employee
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; }
+}
