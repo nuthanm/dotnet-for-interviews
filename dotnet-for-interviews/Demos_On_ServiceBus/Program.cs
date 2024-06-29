@@ -61,6 +61,23 @@ await sbSenderObject.SendMessageAsync(sbMessageObjectData);
 
 #endregion
 
+#region ServiceBus_ReceiveObjectMessage
+
+// Create a ServiceBusReceiver
+ServiceBusReceiver sbReceiverObject = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName");
+
+// Receives a message
+var sbReceivedMessageObject = await sbReceiver.ReceiveMessageAsync();
+var msgObject = sbReceivedMessageObject.Body.ToString();
+
+// Deserialize into an Object
+var empInObj = JsonSerializer.Deserialize<Employee>(msgObject);
+
+// Display the name in console.
+Console.WriteLine($"Message what we received and emp Name is : {empInObj.Name}");
+
+#endregion
+
 public class Employee
 {
     public int Id { get; set; }
