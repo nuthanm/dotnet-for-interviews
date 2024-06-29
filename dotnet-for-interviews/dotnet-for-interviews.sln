@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "demos-on-linq-extensions", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refactor_Switch_Statements", "Refactor_Switch_Statements\Refactor_Switch_Statements.csproj", "{602887E1-B6AD-4601-BBDA-5E19EF810515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediatRDemo", "MediatRDemo\MediatRDemo.csproj", "{F3EE6585-28F3-456B-9724-D1148655C7CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediatRDemo", "MediatRDemo\MediatRDemo.csproj", "{F3EE6585-28F3-456B-9724-D1148655C7CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demos_On_ServiceBus", "Demos_On_ServiceBus\Demos_On_ServiceBus.csproj", "{75A7A05A-DB53-46B9-A38B-7E6AC93B636F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F3EE6585-28F3-456B-9724-D1148655C7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3EE6585-28F3-456B-9724-D1148655C7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3EE6585-28F3-456B-9724-D1148655C7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75A7A05A-DB53-46B9-A38B-7E6AC93B636F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75A7A05A-DB53-46B9-A38B-7E6AC93B636F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75A7A05A-DB53-46B9-A38B-7E6AC93B636F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75A7A05A-DB53-46B9-A38B-7E6AC93B636F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
