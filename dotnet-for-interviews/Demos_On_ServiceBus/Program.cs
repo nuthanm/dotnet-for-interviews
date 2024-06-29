@@ -76,8 +76,47 @@ var empInObj = JsonSerializer.Deserialize<Employee>(msgObject);
 // Display the name in console.
 Console.WriteLine($"Message what we received and emp Name is : {empInObj.Name}");
 
+// To set message processed/Completed explicity
+await sbReceiverObject.CompleteMessageAsync(sbReceivedMessageObject);
+
+// To abondon the receive message
+// This time DeliveryCount increased by 1
+await sbReceiverObject.AbandonMessageAsync(sbReceivedMessageObject);
+
+// To set Deferred
+// Increase Delivery Count by 1 and change state from Active to Deferred
+// Still message exists in Queue
+
+await sbReceiverObject.DeferMessageAsync(sbReceivedMessageObject);
+
+// To access this deferred messages we need Sequence Number == 16 for an example.
+// 90 line to comment when you are calling the below line
+await sbReceiverObject.ReceiveDeferredMessageAsync(16);
+
+// Move the message into Deadletter queue or DLQ
+// Move from Active Queue to DLQ
+await sbReceiverObject.DeadLetterMessageAsync(sbReceivedMessageObject);
+
+// How to read a message from DLQ
+
 #endregion
 
+#region ReceiveMessageFromDLQ
+
+// Create a ServiceBusReceiver from DLQ
+var sbReceiverObjectFromDLQ = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { SubQueue = SubQueue.DeadLetter });
+
+// Receives a message
+var sbReceivedMessageObjectFromDLQ = await sbReceiverObjectFromDLQ.ReceiveMessageAsync();
+var msgObjectFromDLQ = sbReceivedMessageObjectFromDLQ.Body.ToString();
+
+// Deserialize into an Object
+var empInObjFromDLQ = JsonSerializer.Deserialize<Employee>(msgObjectFromDLQ);
+
+// Display the name in console.
+Console.WriteLine($"Message what we received and emp Name is : {empInObj.Name}");
+
+#endregion
 public class Employee
 {
     public int Id { get; set; }
