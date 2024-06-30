@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Azure.Messaging.ServiceBus;
 using System.Text.Json;
+using System.Transactions;
 
 
 // Create a ServiceBusClient
@@ -182,7 +183,36 @@ Console.WriteLine("Demos on Azure Servicebus - End");
 
 #endregion
 
+#region ServiceBus_Cross_Entity_Transactions
+// Create a client with transactions option as true
 
+var sbClient = new ServiceBusClient("<Add_your_namespace_level_connectionString", new ServiceBusClientOptions { EnableCrossEntityTransactions = true });
+
+// Receive a message from one Queue: Queue_1
+var sbReceiverCET = sbClient.CreateReceiver("Queue_1");
+
+// Write that message in Queue_2
+var sbSenderCET1 = sbClient.CreateSender("Queue_2");
+
+// Write that message in Queue_3
+var sbSenderCET2 = sbClient.CreateSender("Queue_3");
+
+// Read a message from Queue_1
+var messageReceivedFromQueue_1 = await sbReceiverCET.ReceiveMessageAsync();
+
+// Then only mark the queue_1 as completed and then delete in Queue_1
+using (var tnx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+{
+    await sbSenderCET1.SendMessageAsync(new ServiceBusMessage(messageReceivedFromQueue_1.Body.ToString()));
+
+    await sbSenderCET2.SendMessageAsync(new ServiceBusMessage(messageReceivedFromQueue_1.Body.ToString()));
+
+    await sbReceiverCET.CompleteMessageAsync(messageReceivedFromQueue_1);
+
+    tnx.Complete();
+}
+
+#endregion
 public class Employee
 {
     public int Id { get; set; }
