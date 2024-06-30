@@ -213,6 +213,24 @@ using (var tnx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
 }
 
 #endregion
+
+#region ServiceBusTopic_With_No_Filters
+
+// Ex: While sending a message from c#
+// All code is same while sending a message only difference is instead of queuename we should pass topic name
+
+#endregion
+
+#region ServiceBusTopic_Read_Messages_From_Subscriptions
+
+// All receiveer logic is same only one difference is while reading we should pass both topic and subscription
+var sbReceiverTopic_with_subscription = sbClient.CreateReceiver("<Topic_Name>", "<SubscriptionName");
+
+// Reading
+await sbReceiverTopic_with_subscription.ReceiveMessageAsync();
+
+#endregion
+
 public class Employee
 {
     public int Id { get; set; }
