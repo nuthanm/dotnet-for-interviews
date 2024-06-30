@@ -1,191 +1,78 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Azure.Messaging.ServiceBus;
-using Azure.Messaging.ServiceBus.Administration;
-using System.Text.Json;
+using Demos_On_ServiceBus;
 using System.Transactions;
 
+#region Create_Queue_Or_Topic_Subscriber
+var createQueue = new CreateQueue();
+await createQueue.CreateQueueAsync();
 
-// Create a ServiceBusClient
-ServiceBusClient sb = new ServiceBusClient("<Add your service bus connection string>");
+var createTopic = new CreateTopic();
+await createTopic.CreateTopicAsync();
 
-
-#region ServiceBus_SendMessage
-Console.WriteLine("Demos on Azure Servicebus - Begin Sending");
-
-// Create a ServiceBusSender
-ServiceBusSender sbSender = sb.CreateSender("<Add_Your_Queue_Or_TopicName");
-
-// Prepare a message
-ServiceBusMessage sbMessage = new ServiceBusMessage("<Add your message_or_json_string");
-
-// Send a message
-await sbSender.SendMessageAsync(sbMessage);
-
-Console.WriteLine("Demos on Azure Servicebus - End");
+var createSubscription = new CreateSubscription();
+await createSubscription.CreateSubscriptionAsync();
 
 #endregion
 
-#region ServiceBus_ReceiveMessage
-Console.WriteLine("Demos on Azure Servicebus - Begin Receving");
+#region SendMessage(s)_Queue
+var queueSend = new SendQueueMessages();
+// Send plain text
+await queueSend.SendMessageAsync("Plain text");
 
-// Create a ServiceBusSender
-ServiceBusReceiver sbReceiver = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName");
+// Send Single Josn
+await queueSend.SendMessageAsync(@"{""Name"":""Nani""}");
 
-// Send a message
-var sbReceivedMessage = await sbReceiver.ReceiveMessageAsync();
+// Send List object
+queueSend.SendMessages(new List<Employee>() { new() { Id = 1, Name = "Sree" } });
 
-Console.WriteLine($"Message what we received: {sbReceivedMessage.Body}");
-
-Console.WriteLine("Demos on Azure Servicebus - End");
+// Send Duplicate
+await queueSend.SendUniqueMessageAsync("Plain text");
 
 #endregion
 
-#region ServiceBus_SendObjectMessage
+#region ReceiveMessage(s)_Queue
+var queueReceive = new ReceiveQueueMesssage();
 
-// Step 1: Prepare an object
-var emp = new Employee()
+// Receive an object of data from Message
+var employeeData = await queueReceive.ReceiveMessageAsync<Employee>();
+if (employeeData != null)
 {
-    Id = 1,
-    Name = "Nani"
-};
+    Console.WriteLine($"Employee Id: {employeeData.Id} and Name : {employeeData.Name}");
+}
 
-// Step 2: Serialize Object => It means convert into Json string
-var empInJson = JsonSerializer.Serialize(emp);
+// Call Completed
+await queueReceive.SetMessageToCompleteAsync();
 
-// Step 3: Add that json directly to servicebusMessage if not Encoding.utf8.Byte method
-ServiceBusMessage sbMessageObjectData = new ServiceBusMessage(empInJson);
+// Call Deferred
+await queueReceive.SetMessageToDeferredAsync();
 
-// Step 4: Add this message to Sender method.
-ServiceBusSender sbSenderObject = sb.CreateSender("<Queue_Name");
+// Call Abandon
+await queueReceive.SetMessageToAbandonAsync();
 
-// Step 5: Your message is in json format.
-await sbSenderObject.SendMessageAsync(sbMessageObjectData);
+// Call DLQ
+await queueReceive.SetMessageToDLQAsync();
 
-#endregion
+// Call Deferred and pass sequence
+int sequenceNumber = 0;// Here you need to pass exact sequence number from queue
+var empObject = await queueReceive.ReceiveMessageFromDeferredAsync<Employee>(sequenceNumber);
+if (employeeData != null)
+{
+    Console.WriteLine($"From Deferred - Employee Id: {employeeData.Id} and Name : {employeeData.Name}");
+}
 
-#region ServiceBus_ReceiveObjectMessage
-
-// Create a ServiceBusReceiver
-ServiceBusReceiver sbReceiverObject = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName");
-
-// Receives a message
-var sbReceivedMessageObject = await sbReceiver.ReceiveMessageAsync();
-var msgObject = sbReceivedMessageObject.Body.ToString();
-
-// Deserialize into an Object
-var empInObj = JsonSerializer.Deserialize<Employee>(msgObject);
-
-// Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObj?.Name}");
-
-// To set message processed/Completed explicity
-await sbReceiverObject.CompleteMessageAsync(sbReceivedMessageObject);
-
-// To abondon the receive message
-// This time DeliveryCount increased by 1
-await sbReceiverObject.AbandonMessageAsync(sbReceivedMessageObject);
-
-// To set Deferred
-// Increase Delivery Count by 1 and change state from Active to Deferred
-// Still message exists in Queue
-
-await sbReceiverObject.DeferMessageAsync(sbReceivedMessageObject);
-
-// To access this deferred messages we need Sequence Number == 16 for an example.
-// 90 line to comment when you are calling the below line
-await sbReceiverObject.ReceiveDeferredMessageAsync(16);
-
-// Move the message into Deadletter queue or DLQ
-// Move from Active Queue to DLQ
-await sbReceiverObject.DeadLetterMessageAsync(sbReceivedMessageObject);
-
-// How to read a message from DLQ
-
-#endregion
-
-#region ReceiveMessageFromDLQ
-
-// Create a ServiceBusReceiver from DLQ
-var sbReceiverObjectFromDLQ = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { SubQueue = SubQueue.DeadLetter });
-
-// Receives a message
-var sbReceivedMessageObjectFromDLQ = await sbReceiverObjectFromDLQ.ReceiveMessageAsync();
-var msgObjectFromDLQ = sbReceivedMessageObjectFromDLQ.Body.ToString();
-
-// Deserialize into an Object
-var empInObjFromDLQ = JsonSerializer.Deserialize<Employee>(msgObjectFromDLQ);
-
-// Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObj?.Name}");
-
-#endregion
-
-#region SampleConfiguration_On_PeekLock_Vs_ReceiveAndDeletee
-
-// Create a ServiceBusReceiver with PeekLock
-// This is a default one and message won't delete after complete
-// TODO: I need to check
-var sbReceiverObjectPeekLock = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { ReceiveMode = ServiceBusReceiveMode.PeekLock });
-
-// Receives a message
-var sbReceivedMessageObjectWithPeekLock = await sbReceiverObjectPeekLock.ReceiveMessageAsync();
-var msgObjectWithPeekLock = sbReceivedMessageObjectFromDLQ.Body.ToString();
-
-// Deserialize into an Object
-var empInObjWithPeekLock = JsonSerializer.Deserialize<Employee>(msgObjectWithPeekLock);
-
-// Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObjWithPeekLock?.Name}");
-
-// Create a ServiceBusReceiver with PeekLock
-// This is a default one and message won't delete after complete
-// TODO: I need to check
-var sbReceiverObjectReceiveAndDelete = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete });
-
-// Receives a message
-var sbReceivedMessageObjectWithReceiveAndDelete = await sbReceiverObjectReceiveAndDelete.ReceiveMessageAsync();
-var msgObjectWithReceiveAndDelete = sbReceivedMessageObjectWithReceiveAndDelete.Body.ToString();
-
-// Deserialize into an Object
-var empInObjWithReceiveAndDelete = JsonSerializer.Deserialize<Employee>(msgObjectWithReceiveAndDelete);
-
-// Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObjWithReceiveAndDelete?.Name}");
-
-#endregion
-
-#region ServiceBus_SendMessage_DuplicateMessagesRestriction
-
-// Create a ServiceBusSender
-sbSender = sb.CreateSender("<Add_Your_Queue_Or_TopicName");
-
-// Prepare a message
-string message = "Two times created";
-var sbMessage1 = new ServiceBusMessage(message);
-var sbMessage2 = new ServiceBusMessage(message);
-
-// Send a message(s) => Two times two entries added in queue
-await sbSender.SendMessageAsync(sbMessage1);
-await sbSender.SendMessageAsync(sbMessage2);
-
-
-string duplicateMessageRestriction = "One time create";
-var sbMessage3 = new ServiceBusMessage(duplicateMessageRestriction);
-sbMessage3.MessageId = "123";
-
-var sbMessage4 = new ServiceBusMessage(duplicateMessageRestriction);
-sbMessage3.MessageId = "123";
-
-// Send a message(s) => Only one entry because for both messages having same messageId
-await sbSender.SendMessageAsync(sbMessage3);
-await sbSender.SendMessageAsync(sbMessage4);
-
-Console.WriteLine("Demos on Azure Servicebus - End");
+// Read message from DLQ
+empObject = await queueReceive.ReceiveMessageFromDLQAsync<Employee>();
+if (employeeData != null)
+{
+    Console.WriteLine($"From DLQ - Employee Id: {employeeData.Id} and Name : {employeeData.Name}");
+}
 
 #endregion
 
 #region ServiceBus_Cross_Entity_Transactions
 // Create a client with transactions option as true
+ServiceBusClient sb = new ServiceBusClient(ConnectionStrings.NamespaceConnectionString);
 
 var sbClient = new ServiceBusClient("<Add_your_namespace_level_connectionString", new ServiceBusClientOptions { EnableCrossEntityTransactions = true });
 
@@ -215,55 +102,64 @@ using (var tnx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
 
 #endregion
 
-#region ServiceBusTopic_With_No_Filters
+#region CreateOrSendOrReceive_CorrelationFilter_Topic
 
-// Ex: While sending a message from c#
-// All code is same while sending a message only difference is instead of queuename we should pass topic name
+var correlationFilter = new SendTopicWithCorrelationFilter();
 
-#endregion
+// Create
+await correlationFilter.CreateSubscriptionEqualFilterAsync();
 
-#region ServiceBusTopic_Read_Messages_From_Subscriptions
+// Send
+var emp = new Employee()
+{
+    Id = 1,
+    Name = "Nani"
+};
 
-// All receiveer logic is same only one difference is while reading we should pass both topic and subscription
-var sbReceiverTopic_with_subscription = sbClient.CreateReceiver("<Topic_Name>", "<SubscriptionName");
+await correlationFilter.SendMessageToTopicAsync(emp);
 
-// Reading
-await sbReceiverTopic_with_subscription.ReceiveMessageAsync();
-
-#endregion
-
-#region CreateNewSubscriber_For_Topic
-
-// Create a new object using ServiceBusAdministrationClient
-// This one comes from this namespace:using Azure.Messaging.ServiceBus.Administration;
-var sbAdminClient = new ServiceBusAdministrationClient("Connectionstring");
-
-// Create a new subscriber
-await sbAdminClient.CreateSubscriptionAsync("<your_topic_name", "<Your_new_subscription_name>");
-
-// For queue/topic also same
-await sbAdminClient.CreateTopicAsync("<your_topic_name>");
-await sbAdminClient.CreateQueueAsync("<Your_queue_name>");
-
-Console.WriteLine("Creation of subscription is successfull");
-
-// Creating a new correlationFilter for subscription
-var subscriberOptions = new CreateSubscriptionOptions("<TopicName>", "<SubscriptionName>");
-
-var subscriberRules = new CreateRuleOptions("<AnyName_SubscriberRule>",
-    new CorrelationRuleFilter()
-    {
-        ApplicationProperties =
-        {
-            { "Key", "Value" } // Ex: key == "name", value == "nani"
-        }
-    });
-
-// This will create new subscriber along with rules and filters
-await sbAdminClient.CreateSubscriptionAsync(subscriberOptions, subscriberRules);
-
+// Receive
+var receiverCorrelationMessageBody = await correlationFilter.ReceiveMessageFromTopicAsync();
+Console.WriteLine($"receiverCorrelationMessageBody: {receiverCorrelationMessageBody}");
 
 #endregion
+
+#region CreateOrSendOrReceiveSQLRuleFilter
+
+var sqlFilter = new SendTopicWithSQLFilter();
+
+// Create
+await sqlFilter.CreateSubscriptionSqlFilterAsync();
+
+// Send
+emp = new Employee()
+{
+    Id = 1,
+    Name = "Nani"
+};
+
+await sqlFilter.SendMessageToTopicWithSqlFilterAsync(emp);
+
+// Receive
+var receiverSQLMessageBody = await sqlFilter.ReceiveMessageFromTopicAsync();
+Console.WriteLine($"receiverSQLMessageBody: {receiverSQLMessageBody}");
+#endregion
+
+#region CreateOrSendOrReceive_BooleanFilter_Topic
+var booleanFilter = new SendTopicWithBooleanFilter();
+
+// Create
+await booleanFilter.CreateSubscriptionTrueFilterAsync();
+await booleanFilter.CreateSubscriptionFalseFilterAsync();
+
+// Send
+await booleanFilter.SendMessageToTopicAsync();
+
+// Receive
+var receiverBooleanObject = await booleanFilter.ReceiveMessageFromTopicAsync();
+Console.WriteLine($"receiverBooleanObject: {receiverBooleanObject}");
+#endregion
+
 public class Employee
 {
     public int Id { get; set; }
