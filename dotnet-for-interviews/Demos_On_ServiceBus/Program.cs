@@ -151,6 +151,38 @@ var empInObjWithReceiveAndDelete = JsonSerializer.Deserialize<Employee>(msgObjec
 Console.WriteLine($"Message what we received and emp Name is : {empInObjWithReceiveAndDelete?.Name}");
 
 #endregion
+
+#region ServiceBus_SendMessage_DuplicateMessagesRestriction
+
+// Create a ServiceBusSender
+sbSender = sb.CreateSender("<Add_Your_Queue_Or_TopicName");
+
+// Prepare a message
+string message = "Two times created";
+var sbMessage1 = new ServiceBusMessage(message);
+var sbMessage2 = new ServiceBusMessage(message);
+
+// Send a message(s) => Two times two entries added in queue
+await sbSender.SendMessageAsync(sbMessage1);
+await sbSender.SendMessageAsync(sbMessage2);
+
+
+string duplicateMessageRestriction = "One time create";
+var sbMessage3 = new ServiceBusMessage(duplicateMessageRestriction);
+sbMessage3.MessageId = "123";
+
+var sbMessage4 = new ServiceBusMessage(duplicateMessageRestriction);
+sbMessage3.MessageId = "123";
+
+// Send a message(s) => Only one entry because for both messages having same messageId
+await sbSender.SendMessageAsync(sbMessage3);
+await sbSender.SendMessageAsync(sbMessage4);
+
+Console.WriteLine("Demos on Azure Servicebus - End");
+
+#endregion
+
+
 public class Employee
 {
     public int Id { get; set; }
