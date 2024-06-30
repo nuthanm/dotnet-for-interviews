@@ -91,6 +91,27 @@ namespace Demos_On_ServiceBus
             await sbSender.SendMessageAsync(sbMessage4);
         }
 
+
+        /// <summary>
+        /// This method sends batch number of messages.
+        /// </summary>
+        /// <param name="message">message.</param>
+        /// <returns>void.</returns>
+        public async Task SendBatchMessagesAsync()
+        {
+
+            // Step 1: Create sender object.
+            sbSender = serviceBusClient.CreateSender(QueueNames.PlaceHolderQueueName);
+
+            // Step 2: Creating a batch of messages
+            var sbCreateBathMessager = await sbSender.CreateMessageBatchAsync();
+            sbCreateBathMessager.TryAddMessage(new ServiceBusMessage("Message 1"));
+            sbCreateBathMessager.TryAddMessage(new ServiceBusMessage("Message 2"));
+
+            // Send multiple messages at once.
+            await sbSender.SendMessagesAsync(sbCreateBathMessager);
+        }
+
         private (ServiceBusSender, ServiceBusMessage) GetSenderAsync(string message, string QueueName)
         {
             // Step 1: Create sender object

@@ -9,6 +9,8 @@
         void SendMessages<T>(List<T> obj);
 
         Task SendUniqueMessageAsync(string message);
+
+        Task SendBatchMessagesAsync();
     }
 
     public interface IReceiveMessages

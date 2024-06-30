@@ -29,6 +29,9 @@ queueSend.SendMessages(new List<Employee>() { new() { Id = 1, Name = "Sree" } })
 // Send Duplicate
 await queueSend.SendUniqueMessageAsync("Plain text");
 
+// Send Batch messages
+await queueSend.SendBatchMessagesAsync();
+
 #endregion
 
 #region ReceiveMessage(s)_Queue
