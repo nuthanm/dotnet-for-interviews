@@ -74,7 +74,7 @@ var msgObject = sbReceivedMessageObject.Body.ToString();
 var empInObj = JsonSerializer.Deserialize<Employee>(msgObject);
 
 // Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObj.Name}");
+Console.WriteLine($"Message what we received and emp Name is : {empInObj?.Name}");
 
 // To set message processed/Completed explicity
 await sbReceiverObject.CompleteMessageAsync(sbReceivedMessageObject);
@@ -114,12 +114,46 @@ var msgObjectFromDLQ = sbReceivedMessageObjectFromDLQ.Body.ToString();
 var empInObjFromDLQ = JsonSerializer.Deserialize<Employee>(msgObjectFromDLQ);
 
 // Display the name in console.
-Console.WriteLine($"Message what we received and emp Name is : {empInObj.Name}");
+Console.WriteLine($"Message what we received and emp Name is : {empInObj?.Name}");
+
+#endregion
+
+#region SampleConfiguration_On_PeekLock_Vs_ReceiveAndDeletee
+
+// Create a ServiceBusReceiver with PeekLock
+// This is a default one and message won't delete after complete
+// TODO: I need to check
+var sbReceiverObjectPeekLock = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { ReceiveMode = ServiceBusReceiveMode.PeekLock });
+
+// Receives a message
+var sbReceivedMessageObjectWithPeekLock = await sbReceiverObjectPeekLock.ReceiveMessageAsync();
+var msgObjectWithPeekLock = sbReceivedMessageObjectFromDLQ.Body.ToString();
+
+// Deserialize into an Object
+var empInObjWithPeekLock = JsonSerializer.Deserialize<Employee>(msgObjectWithPeekLock);
+
+// Display the name in console.
+Console.WriteLine($"Message what we received and emp Name is : {empInObjWithPeekLock?.Name}");
+
+// Create a ServiceBusReceiver with PeekLock
+// This is a default one and message won't delete after complete
+// TODO: I need to check
+var sbReceiverObjectReceiveAndDelete = sb.CreateReceiver("<Add_Your_Queue_Or_TopicName", new ServiceBusReceiverOptions() { ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete });
+
+// Receives a message
+var sbReceivedMessageObjectWithReceiveAndDelete = await sbReceiverObjectReceiveAndDelete.ReceiveMessageAsync();
+var msgObjectWithReceiveAndDelete = sbReceivedMessageObjectWithReceiveAndDelete.Body.ToString();
+
+// Deserialize into an Object
+var empInObjWithReceiveAndDelete = JsonSerializer.Deserialize<Employee>(msgObjectWithReceiveAndDelete);
+
+// Display the name in console.
+Console.WriteLine($"Message what we received and emp Name is : {empInObjWithReceiveAndDelete?.Name}");
 
 #endregion
 public class Employee
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 }
