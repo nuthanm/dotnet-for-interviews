@@ -11,6 +11,10 @@
         Task SendUniqueMessageAsync(string message);
 
         Task SendBatchMessagesAsync();
+
+        Task SendBatchMessagesAsync(int numberOfMessages);
+
+        Task SendBatchMessagesWithSessionIdAsync(int numberOfMessages);
     }
 
     public interface IReceiveMessages

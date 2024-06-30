@@ -112,6 +112,62 @@ namespace Demos_On_ServiceBus
             await sbSender.SendMessagesAsync(sbCreateBathMessager);
         }
 
+        /// <summary>
+        /// This method sends batch number of messages.
+        /// </summary>
+        /// <param name="numberOfMessages">numberOfMessages.</param>
+        /// <returns>void.</returns>
+        public async Task SendBatchMessagesAsync(int numberOfMessages)
+        {
+            // Step 1: Create sender object.
+            sbSender = serviceBusClient.CreateSender(QueueNames.PlaceHolderQueueName);
+
+            // Step 2: Creating a batch of messages
+            var sbCreateBathMessager = await sbSender.CreateMessageBatchAsync();
+
+            // Ex: If numberOfMessages = 1000 means 1000 messages we sent to queue
+            // Reason for this use case is : Queue Processing order is not in FIFO by default
+            for (int i = 1; i < numberOfMessages; i++)
+            {
+                sbCreateBathMessager.TryAddMessage(new ServiceBusMessage($"Message {i}"));
+            }
+
+            // Send multiple messages at once.
+            await sbSender.SendMessagesAsync(sbCreateBathMessager);
+        }
+
+
+
+        /// <summary>
+        /// This method sends batch number of messages with sessionId to receive in sequence order.
+        /// While creating queue/Subscriptions we should enable this Enable Session option.
+        /// </summary>
+        /// <param name="numberOfMessages">numberOfMessages.</param>
+        /// <returns>void.</returns>
+        public async Task SendBatchMessagesWithSessionIdAsync(int numberOfMessages)
+        {
+            // Step 1: Create sender object.
+            sbSender = serviceBusClient.CreateSender(QueueNames.PlaceHolderQueueName);
+
+            // Step 2: Creating a batch of messages
+            var sbCreateBathMessager = await sbSender.CreateMessageBatchAsync();
+
+            // Ex: If numberOfMessages = 1000 means 1000 messages we sent to queue
+            // Reason for this use case is : Queue Processing order is not in FIFO by default
+
+            for (int i = 1; i < numberOfMessages; i++)
+            {
+                var serviceBusMessage = new ServiceBusMessage($"Message: {i}");
+                serviceBusMessage.SessionId = "123"; // This will make queues in FIFO
+                sbCreateBathMessager.TryAddMessage(serviceBusMessage);
+            }
+
+            // To make this in FIFO
+            // Ex: In Azure function app => IsSessionEnabled = true converts into FIFO
+            // Send multiple messages at once.
+            await sbSender.SendMessagesAsync(sbCreateBathMessager);
+        }
+
         private (ServiceBusSender, ServiceBusMessage) GetSenderAsync(string message, string QueueName)
         {
             // Step 1: Create sender object
