@@ -1,0 +1,8 @@
+GET http://localhost:7148/api/loadUsers/1
+Accept: application/json
+
+###
+GET http://localhost:7148/api/LoadUsersUsingRefit/1
+Accept: application/json
+
+###
