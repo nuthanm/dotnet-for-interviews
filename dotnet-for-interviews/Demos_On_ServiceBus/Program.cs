@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using System.Text.Json;
 using System.Transactions;
 
@@ -231,6 +232,21 @@ await sbReceiverTopic_with_subscription.ReceiveMessageAsync();
 
 #endregion
 
+#region CreateNewSubscriber_For_Topic
+
+// Create a new object using ServiceBusAdministrationClient
+// This one comes from this namespace:using Azure.Messaging.ServiceBus.Administration;
+var sbAdminClient = new ServiceBusAdministrationClient("Connectionstring");
+
+// Create a new subscriber
+await sbAdminClient.CreateSubscriptionAsync("<your_topic_name", "<Your_new_subscription_name>");
+
+// For queue/topic also same
+await sbAdminClient.CreateTopicAsync("<your_topic_name>");
+await sbAdminClient.CreateQueueAsync("<Your_queue_name>");
+
+Console.WriteLine("Creation of subscription is successfull");
+#endregion
 public class Employee
 {
     public int Id { get; set; }
