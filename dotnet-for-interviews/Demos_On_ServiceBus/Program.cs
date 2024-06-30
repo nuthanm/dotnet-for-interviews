@@ -246,6 +246,23 @@ await sbAdminClient.CreateTopicAsync("<your_topic_name>");
 await sbAdminClient.CreateQueueAsync("<Your_queue_name>");
 
 Console.WriteLine("Creation of subscription is successfull");
+
+// Creating a new correlationFilter for subscription
+var subscriberOptions = new CreateSubscriptionOptions("<TopicName>", "<SubscriptionName>");
+
+var subscriberRules = new CreateRuleOptions("<AnyName_SubscriberRule>",
+    new CorrelationRuleFilter()
+    {
+        ApplicationProperties =
+        {
+            { "Key", "Value" } // Ex: key == "name", value == "nani"
+        }
+    });
+
+// This will create new subscriber along with rules and filters
+await sbAdminClient.CreateSubscriptionAsync(subscriberOptions, subscriberRules);
+
+
 #endregion
 public class Employee
 {
