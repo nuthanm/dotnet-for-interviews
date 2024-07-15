@@ -48,7 +48,3 @@ Console.WriteLine($"User with id; {updatedUser.Id} has changed the name: {update
 #region DeleteUser
 await userClient.DeleteUser(createdUser.Id);
 #endregion
-
-
-
-//demo
