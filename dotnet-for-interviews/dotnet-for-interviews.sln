@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RefitVsHttpClientConsumer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoOnRefit", "DemoOnRefit\DemoOnRefit.csproj", "{5DAE9D4A-CFD1-48D0-A6A2-0438C567D1CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Refactoring_Snippets", "Refactoring_Snippets\Refactoring_Snippets.csproj", "{03010D7B-AE60-4088-9179-4979D61E6C03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refactoring_Snippets", "Refactoring_Snippets\Refactoring_Snippets.csproj", "{03010D7B-AE60-4088-9179-4979D61E6C03}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo_On_UploadLargeFiles", "Demo_On_UploadLargeFiles\Demo_On_UploadLargeFiles.csproj", "{6EF110EE-31A8-46D8-8166-215396B508EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{03010D7B-AE60-4088-9179-4979D61E6C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03010D7B-AE60-4088-9179-4979D61E6C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03010D7B-AE60-4088-9179-4979D61E6C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EF110EE-31A8-46D8-8166-215396B508EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EF110EE-31A8-46D8-8166-215396B508EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EF110EE-31A8-46D8-8166-215396B508EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EF110EE-31A8-46D8-8166-215396B508EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

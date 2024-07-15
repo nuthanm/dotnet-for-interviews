@@ -1,0 +1,6 @@
+@Demo_On_UploadLargeFiles_HostAddress = http://localhost:5177
+
+GET {{Demo_On_UploadLargeFiles_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
