@@ -4,7 +4,7 @@ namespace WeatherDemo
 {
     public partial class WeatherForecast : Form
     {
-        private static readonly string apiKey = "c29f5f2f5ff9c2ec41c5aff4a8c65b48";
+        private static readonly string apiKey = "<API-KEY>";
         private static readonly string apiBaseUrl = "http://api.openweathermap.org/data/2.5/weather";
 
         public WeatherForecast()
